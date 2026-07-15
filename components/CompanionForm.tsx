@@ -30,8 +30,9 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Textarea } from "./ui/textarea";
+import { createCompanion } from "@/lib/actions/companion.actions";
+import { useRouter } from "next/navigation";
 
-// 1. Definimos el esquema
 const formSchema = z.object({
   name: z.string().min(1, { message: "Companion is required." }),
   subject: z.string().min(1, { message: "Subject is required." }),
@@ -44,6 +45,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const CompanionForm = () => {
+  const router = useRouter();
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,13 +59,25 @@ const CompanionForm = () => {
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
+  const onSubmit = async (values: FormValues) => {
+    try {
+      const companion = await createCompanion(values);
+
+      if (companion) {
+        router.replace(`/companions/${companion.id}`);
+      } else {
+        console.error("Failed to create a companion");
+        router.replace("/");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+    }
   };
 
   return (
     <Card className="w-full sm:max-w-md">
       <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* ... Todo tu JSX de abajo se queda exactamente igual ... */}
         <CardHeader>
           <CardTitle>Create a Companion</CardTitle>
           <CardDescription>Complete the information below.</CardDescription>
