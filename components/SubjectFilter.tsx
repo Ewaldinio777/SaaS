@@ -26,7 +26,7 @@ const SearchInput = () => {
     const currentParams =
       typeof window !== "undefined" ? window.location.search : "";
 
-    if (!searchQuery) {
+    if (!searchQuery || searchQuery === "all subjects") {
       newUrl = removeKeysFromUrlQuery({
         params: currentParams,
         keysToRemove: ["subject"],
@@ -52,6 +52,7 @@ const SearchInput = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
+          <SelectItem value="all subjects">All subjects</SelectItem>
           {subjects.map((subject) => (
             <SelectItem value={subject} key={subject} className="capitalize">
               {subject}
