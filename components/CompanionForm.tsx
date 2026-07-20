@@ -77,7 +77,6 @@ const CompanionForm = () => {
   return (
     <Card className="w-full sm:max-w-md">
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        {/* ... Todo tu JSX de abajo se queda exactamente igual ... */}
         <CardHeader>
           <CardTitle>Create a Companion</CardTitle>
           <CardDescription>Complete the information below.</CardDescription>
