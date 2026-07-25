@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { createSupabaseClient } from "../supabase";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export const createCompanion = async (formData: CreateCompanion) => {
     const {userId: author} = await auth();
@@ -75,7 +76,7 @@ export const getCompanion = async (userId: string) => {
 // Guardar o Quitar (Toggle Bookmark)
 export const toggleSaveCompanion = async (companionId: string) => {
     const { userId } = await auth();
-    if (!userId) throw new Error("No autorizado");
+  if (!userId) redirect("/sign-in");
 
     const supabase = createSupabaseClient();
 

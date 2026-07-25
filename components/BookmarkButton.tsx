@@ -13,26 +13,22 @@ export const BookmarkButton = ({
   companionId,
   initialIsSaved,
 }: BookmarkButtonProps) => {
-  // 1. Estado local para cambio instantáneo de UI
   const [isSaved, setIsSaved] = useState(initialIsSaved);
   const [isPending, startTransition] = useTransition();
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Evita navegar si el botón está dentro de un Link/Card
+    e.preventDefault();
     e.stopPropagation();
 
-    // 2. Actualización optimista: Cambiamos la UI de inmediato
     const nextState = !isSaved;
     setIsSaved(nextState);
 
-    // 3. Ejecutamos la Server Action en segundo plano
     startTransition(async () => {
       try {
         await toggleSaveCompanion(companionId);
       } catch (error) {
-        // Si falla en el servidor, revertimos el estado visual
         setIsSaved(!nextState);
-        console.error("Error al guardar en la biblioteca:", error);
+        console.error("Error saving in the library:", error);
       }
     });
   };
@@ -41,9 +37,7 @@ export const BookmarkButton = ({
     <button
       onClick={handleBookmarkClick}
       disabled={isPending}
-      aria-label={
-        isSaved ? "Quitar de la biblioteca" : "Guardar en la biblioteca"
-      }
+      aria-label={isSaved ? "Remove from the library" : "Save in the library"}
       className="companion-bookmark"
     >
       {isSaved ? (

@@ -1,10 +1,9 @@
-import {
-  isCompanionSaved,
-  toggleSaveCompanion,
-} from "@/lib/actions/companion.actions";
+import { isCompanionSaved } from "@/lib/actions/companion.actions";
 import Image from "next/image";
 import Link from "next/link";
 import { BookmarkButton } from "./BookmarkButton";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 interface CompanionCardProps {
   id: string;

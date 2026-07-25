@@ -1,5 +1,5 @@
 import CompanionComponent from "@/components/CompanionComponent";
-import { getCompanion } from "@/lib/actions/companion.actions";
+import { getCompanion } from "@/lib/actions/companion.actions"; // Esta devuelve el array uniqueLibrary
 import { getSubjectColor } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
@@ -11,13 +11,20 @@ interface CompanionSessionPageProps {
 
 const CompanionSession = async ({ params }: CompanionSessionPageProps) => {
   const { id } = await params;
-  const companion = await getCompanion(id);
   const user = await currentUser();
 
-  const { name, subject, title, topic, duration } = companion;
-
   if (!user) redirect("/sign-in");
-  if (!name) redirect("/companions");
+
+  // 1. Obtenemos el arreglo completo usando el id del usuario
+  const companionsList = await getCompanion(user.id);
+
+  // 2. Buscamos en el arreglo el companion que coincide con el [id] de la URL
+  const companion = companionsList.find((item: any) => item.id === id);
+
+  // Si no se encuentra en su biblioteca, redirigimos
+  if (!companion) redirect("/companions");
+
+  const { name, subject, title, topic, duration } = companion;
 
   return (
     <main>
