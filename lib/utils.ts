@@ -1,25 +1,32 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-import { subjectsColors, voices } from "@/constants"
-import { CreateAssistantDTO } from "vapi-ai/web/dist/api";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { subjectsColors, voices } from "@/constants";
+import Vapi from "@vapi-ai/web";
+
+// Extract strictly the object parameter type from Vapi.start()
+export type CreateAssistantDTO = Extract<
+  Parameters<Vapi["start"]>[0],
+  Record<string, any>
+>;
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const getSubjectColor = (subject: string) => {
   return subjectsColors[subject as keyof typeof subjectsColors];
-}
+};
 
 export const configureAssistant = (voice: string, style: string) => {
-  const voiceId = voices[voice as keyof typeof voices][
-          style as keyof (typeof voices)[keyof typeof voices]
-          ] || "sarah";
+  const voiceId =
+    voices[voice as keyof typeof voices][
+      style as keyof (typeof voices)[keyof typeof voices]
+    ] || "sarah";
 
   const vapiAssistant: CreateAssistantDTO = {
     name: "Companion",
     firstMessage:
-        "Hello, let's start the session. Today we'll be talking about {{topic}}.",
+      "Hello, let's start the session. Today we'll be talking about {{topic}}.",
     transcriber: {
       provider: "deepgram",
       model: "nova-3",
@@ -50,12 +57,11 @@ export const configureAssistant = (voice: string, style: string) => {
                     Keep your style of conversation {{ style }}.
                     Keep your responses short, like in a real voice conversation.
                     Do not include any special characters in your responses - this is a voice conversation.
-              `,
+          `,
         },
       ],
     },
-    clientMessages: [],
-    serverMessages: [],
   };
+
   return vapiAssistant;
 };
